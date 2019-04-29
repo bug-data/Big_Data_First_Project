@@ -124,3 +124,6 @@ dmypy.json
 
 #MacOS
 .DS_Store
+
+#dataset folder
+dataset/
