@@ -18,4 +18,4 @@ for line in sys.stdin:
             year = int(date[0:4])
             # check if year is in range startRange-endRange
             if year in rangeValues:
-                print('{}\t{} {} {} {} {}'.format(ticker, close, low, high, volume, date))
+                print('{}\t{}\t{}\t{}\t{}\t{}'.format(ticker, close, low, high, volume, date))
