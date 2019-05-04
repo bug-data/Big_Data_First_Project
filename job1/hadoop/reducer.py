@@ -49,7 +49,7 @@ def parseValues(valueList):
     close = float(valueList[CLOSE].strip())
     low = float(valueList[LOW].strip())
     high = float(valueList[HIGH].strip())
-    volume = int(valueList[VOLUME].strip())
+    volume = float(valueList[VOLUME].strip())
     date = datetime.strptime(valueList[DATE].strip(), '%Y-%m-%d')
     return [ticker, close, low, high, volume, date]
 
