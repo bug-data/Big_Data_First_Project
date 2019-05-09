@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 import sys
-from datetime import datetime
 
-
-#field position in each row
+#field position of each row taken from stdin
 SECTOR = 0
 TICKER = 1
 DATE = 2
@@ -64,13 +62,8 @@ for line in sys.stdin:
     if len(valueList) == 5:
         sector, ticker, year, close, volume = parseValues(valueList)
 
-        #update total close and volume values for this sector in this year
-        updateSectorTrend(year, 'totalClosePrice', close)
-        updateSectorTrend(year, 'entireVolume', volume)
-        updateSectorTrend(year, 'closePriceCount', 1)
-
         if prevSector and prevSector != sector:
-            #sector value (and consequently ticker value) changed. 
+            # sector value (and consequently ticker value) changed. 
             # So we set final close price for this ticker,
             # write a new record for the previous sector 
             # and update global variables for the new sector
@@ -86,18 +79,27 @@ for line in sys.stdin:
 
             #this is the first available date for this new ticker's record, so we update closePriceStartingValue
             updateSectorTrend(year, 'closePriceStartingValue', close)
+            #update total close and volume values for this sector in this year
+            updateSectorTrend(year, 'totalClosePrice', close)
+            updateSectorTrend(year, 'entireVolume', volume)
+            updateSectorTrend(year, 'closePriceCount', 1)
+
         else:
             #key value unchanged (or this is the first row of the file). 
             prevSector = sector
             
-            #Two cases: same ticker or different ticker
+            #update total close and volume values for this sector in this year
+            updateSectorTrend(year, 'totalClosePrice', close)
+            updateSectorTrend(year, 'entireVolume', volume)
+            updateSectorTrend(year, 'closePriceCount', 1)
 
-            #Different ticker
+            #Two cases: same ticker or different ticker
             if prevTicker and prevTicker != ticker:
+                #Case 1: Different ticker
                 #this means that previous close value was the last value
                 updateSectorTrend(prevYear, 'closePriceFinalValue', prevClose)
 
-                #this also means that the current close value is the first close value for this tickers
+                #this also means that the current close value is the first close value for this ticker
                 updateSectorTrend(year, 'closePriceStartingValue', close)
                 
                 #update global variables
@@ -105,13 +107,12 @@ for line in sys.stdin:
                 prevYear = year
                 prevClose = close
 
-            #same ticker or first row of the file
             else:
-                
+                #Case 2: same ticker or first row of the file
                 #first row of the file
                 if not prevTicker:
                     prevTicker = ticker
-                    #this also means that the current close value is the first close value for this tickers
+                    #this also means that the current close value is the first close value for this ticker
                     updateSectorTrend(year, 'closePriceStartingValue', close)
 
                 #update global variables
@@ -119,7 +120,7 @@ for line in sys.stdin:
                 prevYear = year
                 prevClose = close
 
-#add last computed key into result
+#print last computed key
 if prevSector:
     #this means that previous close value was the last value
     updateSectorTrend(prevYear, 'closePriceFinalValue', prevClose)
