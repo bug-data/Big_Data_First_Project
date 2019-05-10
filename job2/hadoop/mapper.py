@@ -11,7 +11,7 @@ rangeValues = range(startRange, endRange + 1)
 tickerToSectorMap = {}
 
 #reading from the distributed cache
-with open('historical_stocks.csv') as csv_file:
+with open('../../dataset/historical_stocks_reduced.csv') as csv_file:
     csv_reader = csv.reader(csv_file, delimiter=',')
     firstLine = True
 
@@ -28,7 +28,7 @@ for line in sys.stdin:
     data = line.strip().split(',') 
     if len(data) == 8:
         ticker, _, close, _, _, _, volume, date = data
-        
+        print(ticker)
         #ignore file's first row
         if ticker != 'ticker':
             year = int(date[0:4])

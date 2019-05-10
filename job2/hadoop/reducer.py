@@ -32,7 +32,9 @@ yearToSectorTrend = {}
 
 #utility function for printing a set of key value pairs
 def writeRecord():
-    for year, sectorTrend in yearToSectorTrend.items():
+    for year in sorted(yearToSectorTrend.keys()):
+        sectorTrend = yearToSectorTrend[year]
+    #for year, sectorTrend in yearToSectorTrend.items():
         entireVolume = sectorTrend['entireVolume']
         percentChange = (sectorTrend['closePriceFinalValue'] - sectorTrend['closePriceStartingValue'])/sectorTrend['closePriceStartingValue']
         averageClosePrice = sectorTrend['totalClosePrice']/sectorTrend['closePriceCount']
@@ -40,10 +42,15 @@ def writeRecord():
 
 #add or set "value" to yearToSectorTrend[year] dictionary based on key presence
 def updateSectorTrend(year, key, value):
-    if key in yearToSectorTrend[year]:
-        yearToSectorTrend[year] += value
-    else: 
-        yearToSectorTrend[year] = value
+    if year in yearToSectorTrend:
+        if key in yearToSectorTrend[year]:
+            yearToSectorTrend[year][key] += value
+        else: 
+            yearToSectorTrend[year][key] = value
+    else:
+        yearToSectorTrend[year] = {}
+        yearToSectorTrend[year][key] = value
+
 
 #parse each value in value list
 def parseValues(valueList):
@@ -67,6 +74,7 @@ for line in sys.stdin:
             # So we set final close price for this ticker,
             # write a new record for the previous sector 
             # and update global variables for the new sector
+            updateSectorTrend(prevYear, 'closePriceFinalValue', prevClose)
             writeRecord()
 
             #reset variable values
@@ -96,7 +104,7 @@ for line in sys.stdin:
             #Two cases: same ticker or different ticker
             if prevTicker and prevTicker != ticker:
                 #Case 1: Different ticker
-                #this means that previous close value was the last value
+                #this means that previous close value was the ending close value for the previous ticker in the previous year
                 updateSectorTrend(prevYear, 'closePriceFinalValue', prevClose)
 
                 #this also means that the current close value is the first close value for this ticker
@@ -115,8 +123,13 @@ for line in sys.stdin:
                     #this also means that the current close value is the first close value for this ticker
                     updateSectorTrend(year, 'closePriceStartingValue', close)
 
+                #we need to establish if the current year has changed. If so we need to update the final close price for the last ticker
+                #in the previous year and the starting close value for the same ticker in the current year
+                if prevYear and prevYear != year:
+                    updateSectorTrend(prevYear, 'closePriceFinalValue', prevClose)
+                    updateSectorTrend(year, 'closePriceStartingValue', close)
+                    
                 #update global variables
-                prevTicker = ticker
                 prevYear = year
                 prevClose = close
 
