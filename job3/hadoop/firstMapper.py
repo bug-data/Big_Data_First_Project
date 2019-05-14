@@ -10,10 +10,11 @@ rangeValues = range(startRange, endRange + 1)
 
 tickerToInfoMap = {}
 
-#reading from the distributed cache
+# reading from the distributed cache
 with open('../../dataset/historical_stocks_reduced.csv') as csv_file:
     csv_reader = csv.reader(csv_file, delimiter=',')
-    firstLine = True #ignore first line
+    # ignore first line
+    firstLine = True
 
     for row in csv_reader:
         if not firstLine:
@@ -24,11 +25,11 @@ with open('../../dataset/historical_stocks_reduced.csv') as csv_file:
             firstLine = False
 
 for line in sys.stdin:
-    #turn each row into a list of strings
+    # turn each row into a list of strings
     data = line.strip().split(',') 
     if len(data) == 8:
         ticker, _, close, _, _, _, _, date = data
-        #ignore file's first row
+        # ignore file's first row
         if ticker != 'ticker':
             year = int(date[0:4])
 
