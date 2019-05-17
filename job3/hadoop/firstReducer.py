@@ -7,6 +7,10 @@ DATE = 1
 SECTOR = 2
 CLOSE = 3
 
+STARTRANGE = 2016
+ENDRANGE = 2018
+
+rangeValues = list(range(STARTRANGE, ENDRANGE + 1))
 
 # global variables
 prevName = None
@@ -27,19 +31,22 @@ yearToCompanyTrend = {}
 
 # *** utility functions ***
 
+
 # utility function for printing a set of key value pairs
 def writeRecord():
-    percentChangeMap = {'2016': None, '2017': None, '2018': None}
-    for year in sorted(yearToCompanyTrend.keys()):
-        sectorTrend = yearToCompanyTrend[year]
-        percentChange = (sectorTrend['closePriceFinalValue'] - sectorTrend['closePriceStartingValue'])/sectorTrend['closePriceStartingValue']
-        percentChangeMap[year] = round(percentChange*100)
+    # First, let's check that a non null value exists for each year
+    if all(year in yearToCompanyTrend for year in rangeValues):
+        percentChangeMap = {'2016': None, '2017': None, '2018': None}
+        for year in sorted(yearToCompanyTrend.keys()):
+            sectorTrend = yearToCompanyTrend[year]
+            percentChange = (sectorTrend['closePriceFinalValue'] - sectorTrend['closePriceStartingValue'])/sectorTrend['closePriceStartingValue']
+            percentChangeMap[year] = round(percentChange*100)
 
-    print('{}\t{}\t{}\t{}\t{}'.format(percentChangeMap['2016'],
-                                      percentChangeMap['2017'],
-                                      percentChangeMap['2018'],
-                                      prevName,
-                                      prevSector))
+        print('{}\t{}\t{}\t{}\t{}'.format(percentChangeMap['2016'],
+                                        percentChangeMap['2017'],
+                                        percentChangeMap['2018'],
+                                        prevName,
+                                        prevSector))
 
 
 # add or set "value" to yearToCompanyTrend[year]
