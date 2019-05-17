@@ -34,7 +34,6 @@ yearToSectorTrend = {}
 def writeRecord():
     for year in sorted(yearToSectorTrend.keys()):
         sectorTrend = yearToSectorTrend[year]
-    #for year, sectorTrend in yearToSectorTrend.items():
         entireVolume = sectorTrend['entireVolume']
         percentChange = (sectorTrend['closePriceFinalValue'] - sectorTrend['closePriceStartingValue'])/sectorTrend['closePriceStartingValue']
         averageClosePrice = sectorTrend['totalClosePrice']/sectorTrend['closePriceCount']
@@ -59,7 +58,7 @@ def parseValues(valueList):
     year = valueList[DATE].strip()[0:4]
     close = float(valueList[CLOSE].strip())
     volume = float(valueList[VOLUME].strip())
-    return [sector, ticker, year, close, volume]
+    return (sector, ticker, year, close, volume)
 
 
 #main script
