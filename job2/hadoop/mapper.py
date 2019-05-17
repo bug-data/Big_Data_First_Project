@@ -3,7 +3,7 @@
 import sys
 import csv
 
-startRange = 1998
+startRange = 2004
 endRange = 2018
 
 rangeValues = range(startRange, endRange + 1)
