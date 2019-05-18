@@ -34,11 +34,23 @@ yearToCompanyTrend = {}
 
 # utility function for printing a set of key value pairs
 def writeRecord():
+
     # First, let's check that a non null value exists for each year
     if all(str(year) in yearToCompanyTrend for year in rangeValues):
+
+        yearToCompanyTrendKeys = yearToCompanyTrend.keys()
+        # the last two curly brackets are placeholder
+        # for company's sector and name
+        listOfSquareBrackets = ['{}'] * len(yearToCompanyTrendKeys) + ['{}', '{}']
         
-        percentChangeMap = {'2016': None, '2017': None, '2018': None}
-        
+        formattedString = '\t'.join(listOfSquareBrackets)
+        # percentChangeMap = {'2016': None, '2017': None, '2018': None}
+        # percentChangeMap is a dictionary whose keys are
+        # years (taken from the yearToCompanyTrend keys) and
+        # values are None (temporary)
+
+        percentChangeMap = {year: None for year in yearToCompanyTrendKeys}
+
         for year in sorted(yearToCompanyTrend.keys()):
             sectorTrend = yearToCompanyTrend[year]
             closePriceFinalValue = sectorTrend['closePriceFinalValue']
@@ -47,15 +59,11 @@ def writeRecord():
             percentChange = closeDifference/closePriceStartingValue
             percentChangeMap[year] = int(round(percentChange*100))
 
-        percentChange2016 = percentChangeMap['2016']
-        percentChange2017 = percentChangeMap['2017']
-        percentChange2018 = percentChangeMap['2018']
-        
-        print('{}\t{}\t{}\t{}\t{}'.format(percentChange2016,
-                                          percentChange2017,
-                                          percentChange2018,
-                                          prevName,
-                                          prevSector))
+        sortedPercentChangeMapKeys = sorted(percentChangeMap)
+        sortedPercentChangeMapValues = [percentChangeMap[year] for year
+                                        in sortedPercentChangeMapKeys]
+        valuesToPrint = sortedPercentChangeMapValues + [prevName, prevSector]
+        print(formattedString.format(*(valuesToPrint)))
 
 
 # add or set "value" to yearToCompanyTrend[year]
