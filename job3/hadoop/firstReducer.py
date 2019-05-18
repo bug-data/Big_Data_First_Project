@@ -35,19 +35,22 @@ yearToCompanyTrend = {}
 # utility function for printing a set of key value pairs
 def writeRecord():
     # First, let's check that a non null value exists for each year
-    percentChangeMap = {'2016': None, '2017': None, '2018': None}
-    for year in sorted(yearToCompanyTrend.keys()):
-        sectorTrend = yearToCompanyTrend[year]
-        closePriceFinalValue = sectorTrend['closePriceFinalValue']
-        closePriceStartingValue = sectorTrend['closePriceStartingValue']
-        closeDifference = closePriceFinalValue - closePriceStartingValue
-        percentChange = closeDifference/closePriceStartingValue
-        percentChangeMap[year] = round(percentChange*100)
+    if all(str(year) in yearToCompanyTrend for year in rangeValues):
+        
+        percentChangeMap = {'2016': None, '2017': None, '2018': None}
+        
+        for year in sorted(yearToCompanyTrend.keys()):
+            sectorTrend = yearToCompanyTrend[year]
+            closePriceFinalValue = sectorTrend['closePriceFinalValue']
+            closePriceStartingValue = sectorTrend['closePriceStartingValue']
+            closeDifference = closePriceFinalValue - closePriceStartingValue
+            percentChange = closeDifference/closePriceStartingValue
+            percentChangeMap[year] = round(percentChange*100)
 
-    percentChange2016 = percentChangeMap['2016']
-    percentChange2017 = percentChangeMap['2017']
-    percentChange2018 = percentChangeMap['2018']
-    if percentChange2016 and percentChange2017 and percentChange2018:
+        percentChange2016 = percentChangeMap['2016']
+        percentChange2017 = percentChangeMap['2017']
+        percentChange2018 = percentChangeMap['2018']
+        
         print('{}\t{}\t{}\t{}\t{}'.format(percentChange2016,
                                           percentChange2017,
                                           percentChange2018,
