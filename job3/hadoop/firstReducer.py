@@ -45,7 +45,7 @@ def writeRecord():
             closePriceStartingValue = sectorTrend['closePriceStartingValue']
             closeDifference = closePriceFinalValue - closePriceStartingValue
             percentChange = closeDifference/closePriceStartingValue
-            percentChangeMap[year] = round(percentChange*100)
+            percentChangeMap[year] = int(round(percentChange*100))
 
         percentChange2016 = percentChangeMap['2016']
         percentChange2017 = percentChangeMap['2017']
