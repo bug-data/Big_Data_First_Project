@@ -11,7 +11,7 @@ rangeValues = range(startRange, endRange + 1)
 tickerToInfoMap = {}
 
 # reading from the distributed cache
-with open('../../dataset/historical_stocks_reduced.csv') as csv_file:
+with open('historical_stocks.csv') as csv_file:
     csv_reader = csv.reader(csv_file, delimiter=',')
     # ignore first line
     firstLine = True
