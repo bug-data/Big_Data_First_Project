@@ -1,7 +1,7 @@
 #!/bin/bash
 
 mapred streaming \
-				-D stream.num.map.output.key.fields=2 \
+				-D stream.num.map.output.key.fields=3 \
 				-files firstMapper.py,firstReducer.py,../../dataset/historical_stocks.csv \
 				-mapper firstMapper.py \
 				-reducer firstReducer.py \

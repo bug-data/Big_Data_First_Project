@@ -3,10 +3,10 @@
 import sys
 import csv
 
-startRange = 2016
-endRange = 2018
+STARTRANGE = 2016
+ENDRANGE = 2018
 
-rangeValues = range(startRange, endRange + 1)
+rangeValues = range(STARTRANGE, ENDRANGE + 1)
 
 tickerToInfoMap = {}
 
@@ -34,8 +34,13 @@ for line in sys.stdin:
             year = int(date[0:4])
 
             # check if year is in range startRange-endRange
-            # check if the ticker has a corresponding sector (we filter out tickers whose sectors are N/A)
+            # check if the ticker has a corresponding sector (we filter out
+            # tickers whose sectors are N/A)
             if year in rangeValues and ticker in tickerToInfoMap:
                 sector = tickerToInfoMap[ticker]['sector']
                 name = tickerToInfoMap[ticker]['name']
-                print('{}\t{}\t{}\t{}'.format(name, date, sector, close))
+                print('{}\t{}\t{}\t{}\t{}'.format(name,
+                                                  ticker,
+                                                  date,
+                                                  sector,
+                                                  close))
