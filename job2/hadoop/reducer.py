@@ -100,72 +100,102 @@ for line in sys.stdin:
             # So we set final close price for this ticker,
             # write a new record for the previous sector
             # and update global variables for the new sector
-            updateDataStructure(yearToSectorTrend, prevYear, 'closePriceFinalValue', prevClose)
+            updateDataStructure(yearToSectorTrend,
+                                prevYear,
+                                'closePriceFinalValue',
+                                prevClose)
             writeRecord()
 
-            # reset variable values
-            prevSector = sector
-            prevTicker = ticker
-            prevYear = year
-            prevClose = close
             # reset our dictionaries
             yearToSectorTrend = {}
             yearToSectorDailyClosePrice = {}
 
             # this is the first available date for this new ticker's record,
             # so we update closePriceStartingValue
-            updateDataStructure(yearToSectorTrend, year, 'closePriceStartingValue', close)
+            updateDataStructure(yearToSectorTrend,
+                                year,
+                                'closePriceStartingValue',
+                                close)
+            
             # update close and volume values for this sector in this year
-            updateDataStructure(yearToSectorTrend, year, 'entireVolume', volume)
-            updateDataStructure(yearToSectorDailyClosePrice, year, date, close)
+            updateDataStructure(yearToSectorTrend,
+                                year,
+                                'entireVolume',
+                                volume)
+
+            updateDataStructure(yearToSectorDailyClosePrice,
+                                year,
+                                date,
+                                close)
 
         else:
-            # key value unchanged (or this is the first row of the file). 
-            prevSector = sector
-            
+            # key value unchanged (or this is the first row of the file).
             # update total close and volume values for this sector in this year
-            updateDataStructure(yearToSectorTrend, year, 'entireVolume', volume)
-            updateDataStructure(yearToSectorDailyClosePrice, year, date, close)
+            updateDataStructure(yearToSectorTrend,
+                                year,
+                                'entireVolume',
+                                volume)
+
+            updateDataStructure(yearToSectorDailyClosePrice,
+                                year,
+                                date,
+                                close)
 
             # Two cases: same ticker or different ticker
             if prevTicker and prevTicker != ticker:
                 # Case 1: Different ticker
-                # this means that previous close value was the ending close 
+                # this means that previous close value was the ending close
                 # value for the previous ticker in the previous year
-                updateDataStructure(yearToSectorTrend, prevYear, 'closePriceFinalValue', prevClose)
+                updateDataStructure(yearToSectorTrend,
+                                    prevYear,
+                                    'closePriceFinalValue',
+                                    prevClose)
 
-                # this also means that the current close value is the 
+                # this also means that the current close value is the
                 # first close value for this ticker
-                updateDataStructure(yearToSectorTrend, year, 'closePriceStartingValue', close)
-                
-                # update global variables
-                prevTicker = ticker
-                prevYear = year
-                prevClose = close
+                updateDataStructure(yearToSectorTrend,
+                                    year,
+                                    'closePriceStartingValue',
+                                    close)
 
             else:
                 # Case 2: same ticker or first row of the file
                 # first row of the file
                 if not prevTicker:
                     prevTicker = ticker
-                    # this also means that the current close value is the 
+                    # this also means that the current close value is the
                     # first close value for this ticker
-                    updateDataStructure(yearToSectorTrend, year, 'closePriceStartingValue', close)
+                    updateDataStructure(yearToSectorTrend,
+                                        year,
+                                        'closePriceStartingValue',
+                                        close)
 
                 # we need to establish if the current year has changed.
-                # If so we need to update the final close price for 
-                # the last ticker in the previous year and the 
+                # If so we need to update the final close price for
+                # the last ticker in the previous year and the
                 # starting close value for the same ticker in the current year
                 if prevYear and prevYear != year:
-                    updateDataStructure(yearToSectorTrend, prevYear, 'closePriceFinalValue', prevClose)
-                    updateDataStructure(yearToSectorTrend, year, 'closePriceStartingValue', close)
+                    updateDataStructure(yearToSectorTrend,
+                                        prevYear,
+                                        'closePriceFinalValue',
+                                        prevClose)
+
+                    updateDataStructure(yearToSectorTrend,
+                                        year,
+                                        'closePriceStartingValue',
+                                        close)
                     
-                # update global variables
-                prevYear = year
-                prevClose = close
+        # update global variables
+        prevSector = sector
+        prevTicker = ticker
+        prevYear = year
+        prevClose = close
 
 # print last computed key
 if prevSector:
     # this means that previous close value was the last value
-    updateDataStructure(yearToSectorTrend, prevYear, 'closePriceFinalValue', prevClose)
+    updateDataStructure(yearToSectorTrend,
+                        prevYear,
+                        'closePriceFinalValue',
+                        prevClose)
     writeRecord()
