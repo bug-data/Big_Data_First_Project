@@ -8,10 +8,6 @@ PERCENTDIFF2018 = 2
 NAME = 3
 SECTOR = 4
 
-# field position in percent triplet:
-PERCENTDIFF2016INTRIPLET = 0
-PERCENTDIFF2017INTRIPLET = 1
-PERCENTDIFF2018INTRIPLET = 2
 
 # global variables
 prevPercentChangeTriplet = None
@@ -34,14 +30,19 @@ def writeRecord():
     for i in range(listLength - 1):
         for j in range(i, listLength):
             firstCompany = companyList[i]
+            firstCompanyName = firstCompany['name']
+            firstCompanySector = firstCompany['sector']
             secondCompany = companyList[j]
-            if firstCompany['sector'] != secondCompany['sector']:
-                print('{}\t{}\t2016: {}%\t2017: {}%\t2018: {}%'
-                      .format(firstCompany['name'],
-                              secondCompany['name'],
-                              prevPercentChangeTriplet[PERCENTDIFF2016INTRIPLET],
-                              prevPercentChangeTriplet[PERCENTDIFF2017INTRIPLET],
-                              prevPercentChangeTriplet[PERCENTDIFF2018INTRIPLET]
+            secondCompanyName = secondCompany['name']
+            secondCompanySector = secondCompany['sector']
+            if firstCompanySector != secondCompanySector \
+               and firstCompanyName != secondCompanyName:
+                print('{}\t{}\t{}\t{}\t2016: {}%\t2017: {}%\t2018: {}%'
+                      .format(firstCompanyName,
+                              firstCompanySector,
+                              secondCompanyName,
+                              secondCompanySector,
+                              *prevPercentChangeTriplet
                               )
                       )
 
