@@ -1,17 +1,18 @@
 #!/usr/bin/env python
 import sys
+import csv
+
 
 # field position of each row taken from stdin
 NAME = 0
 TICKER = 1
 DATE = 2
-SECTOR = 3
-CLOSE = 4
+CLOSE = 3
 
 STARTRANGE = 2016
 ENDRANGE = 2018
 
-RECORD_LENGTH = 5
+RECORD_LENGTH = 4
 
 rangeValues = list(range(STARTRANGE, ENDRANGE + 1))
 
@@ -19,19 +20,20 @@ rangeValues = list(range(STARTRANGE, ENDRANGE + 1))
 prevName = None
 prevTicker = None
 prevYear = None
-prevSector = None
 prevClose = None
 
-# data structure to avoid date comparison
+# yearToCompanyTrend is data structure used to avoid date comparison
 # it stores data for a SINGLE company name
 # so it will be resetted on each company name
 '''
 key: year, value: dictionary {
-    closePriceStartingValue: closePriceStartingValue, 
+    closePriceStartingValue: closePriceStartingValue,
     closePriceFinalValue: closePriceFinalValue,
     }
 '''
 yearToCompanyTrend = {}
+
+companyNameToSectorMap = {}
 
 
 # *** utility functions ***
@@ -39,7 +41,6 @@ yearToCompanyTrend = {}
 
 # utility function for printing a set of key value pairs
 def writeRecord():
-
     # First, let's check that a non null value exists for each year
     if all(str(year) in yearToCompanyTrend for year in rangeValues):
 
@@ -67,8 +68,13 @@ def writeRecord():
         sortedPercentChangeMapKeys = sorted(percentChangeMap)
         sortedPercentChangeMapValues = [percentChangeMap[year] for year
                                         in sortedPercentChangeMapKeys]
-        valuesToPrint = sortedPercentChangeMapValues + [prevName, prevSector]
-        print(formattedString.format(*(valuesToPrint)))
+                                        
+        if prevName in companyNameToSectorMap:
+            sectorList = companyNameToSectorMap[prevName]
+            for sector in sectorList:
+                valuesToPrint = sortedPercentChangeMapValues + [prevName,
+                                                                sector]
+                print(formattedString.format(*(valuesToPrint)))
 
 
 # add or set "value" to yearToCompanyTrend[year]
@@ -89,9 +95,29 @@ def parseValues(valueList):
     name = valueList[NAME].strip()
     ticker = valueList[TICKER].strip()
     year = valueList[DATE].strip()[0:4]
-    sector = valueList[SECTOR].strip()
     close = float(valueList[CLOSE].strip())
-    return (name, ticker, year, sector, close)
+    return (name, ticker, year, close)
+
+
+# code section
+
+# reading from the distributed cache
+with open('historical_stocks.csv') as csv_file:
+    csv_reader = csv.reader(csv_file, delimiter=',')
+    # ignore first line
+    firstLine = True
+
+    for row in csv_reader:
+        if not firstLine:
+            _, _, name, sector, _ = row
+            if sector != 'N/A':
+                if name in companyNameToSectorMap:
+                    if sector not in companyNameToSectorMap[name]:
+                        companyNameToSectorMap[name].append(sector)
+                else:
+                    companyNameToSectorMap[name] = [sector]
+        else:
+            firstLine = False
 
 
 # main script
@@ -99,7 +125,7 @@ for line in sys.stdin:
     valueList = line.strip().split('\t')
 
     if len(valueList) == RECORD_LENGTH:
-        name, ticker, year, sector, close = parseValues(valueList)
+        name, ticker, year, close = parseValues(valueList)
 
         if prevName and prevName != name:
             # company name changed.
@@ -179,7 +205,6 @@ for line in sys.stdin:
         prevName = name
         prevTicker = ticker
         prevYear = year
-        prevSector = sector
         prevClose = close
 
 # print last computed key
