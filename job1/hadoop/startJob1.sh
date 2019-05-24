@@ -1,6 +1,6 @@
 #!/bin/bash
 
-hadoop jar hadoop-streaming-2.9.2.jar \
+hadoop jar /usr/lib/hadoop-mapreduce/hadoop-streaming.jar \
 		-D stream.num.map.output.key.fields=2 \
 		-files gs://bug-data/job1/hadoop/mapper.py,gs://bug-data/job1/hadoop/reducer.py \
 		-mapper mapper.py \
