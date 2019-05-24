@@ -2,8 +2,8 @@
 
 mapred streaming \
 		-D stream.num.map.output.key.fields=2 \
-		-files mapper.py,reducer.py \
+		-files gs://bug-data/job1/hadoop/mapper.py,gs://bug-data/job1/hadoop/reducer.py \
 		-mapper mapper.py \
 		-reducer reducer.py \
-		-input input/historical_stock_prices.csv \
-		-output output/job1_hadoop
+		-input gs://bug-data/input/historical_stock_prices.csv \
+		-output gs://bug-data/output/job1_hadoop
