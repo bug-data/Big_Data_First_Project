@@ -1,6 +1,6 @@
 #!/bin/bash
 
-mapred streaming \
+hadoop jar hadoop-streaming-2.9.2.jar \
 				-D stream.num.map.output.key.fields=3 \
 				-files gs://bug-data/job3/hadoop/firstMapper.py,gs://bug-data/job3/hadoop/firstReducer.py,gs://bug-data/input/historical_stocks.csv \
 				-mapper firstMapper.py \
@@ -8,7 +8,7 @@ mapred streaming \
 				-input gs://bug-data/input/historical_stock_prices_5M.csv \
 				-output gs://bug-data/output/job3_hadoop_tmp_5M \
 && 	\
-mapred streaming \
+hadoop jar hadoop-streaming-2.9.2.jar \
 				-D stream.num.map.output.key.fields=3 \
 				-files gs://bug-data/job3/hadoop/secondMapper.py,gs://bug-data/job3/hadoop/secondReducer.py \
 				-mapper secondMapper.py \
