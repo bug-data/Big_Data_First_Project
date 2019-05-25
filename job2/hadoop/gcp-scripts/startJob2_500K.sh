@@ -7,4 +7,5 @@ hadoop jar /usr/lib/hadoop-mapreduce/hadoop-streaming.jar \
 				-mapper mapper.py \
 				-reducer reducer.py \
 				-input gs://bug-data/input/historical_stock_prices_500K.csv \
-				-output gs://bug-data/output/job2_hadoop_500K
+				-output gs://bug-data/output/job2_hadoop_500K \
+				-partitioner org.apache.hadoop.mapred.lib.KeyFieldBasedPartitioner
