@@ -11,6 +11,7 @@ hadoop jar /usr/lib/hadoop-mapreduce/hadoop-streaming.jar \
 && 	\
 hadoop jar /usr/lib/hadoop-mapreduce/hadoop-streaming.jar \
 				-D stream.num.map.output.key.fields=3 \
+				-D mapreduce.job.reduces=1 \
 				-files gs://bug-data/job3/hadoop/secondMapper.py,gs://bug-data/job3/hadoop/secondReducer.py \
 				-mapper secondMapper.py \
 				-reducer secondReducer.py \
