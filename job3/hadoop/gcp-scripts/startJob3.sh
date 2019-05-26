@@ -3,7 +3,7 @@
 hadoop jar /usr/lib/hadoop-mapreduce/hadoop-streaming.jar \
 				-D stream.num.map.output.key.fields=3 \
 				-D mapreduce.partition.keypartitioner.options=-k1,1 \
-				-D mapreduce.job.reduces=3 \
+				-D mapreduce.job.reduces=2 \
 				-files gs://bug-data/job3/hadoop/firstMapper.py,gs://bug-data/job3/hadoop/firstReducer.py,gs://bug-data/input/historical_stocks.csv \
 				-mapper firstMapper.py \
 				-reducer firstReducer.py \
