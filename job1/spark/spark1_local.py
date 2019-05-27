@@ -16,8 +16,7 @@ def max_close(x, y):
 		return y
 	else:
 		return x
-
-input = sc.textFile("../../dataset/historical_stock_prices.csv") \
+input = sc.textFile("file:///Users/jgmathew/Documents/RomaTre/Magistrale/SecondoAnno/SecondoSemestre/BigData/FirstProject/dataset/historical_stock_prices.csv") \
 		.map(lambda line: line.split(","))
 
 input = input.filter(lambda line: line[0] != "ticker")
@@ -58,4 +57,4 @@ result = max_ticker_high.join(min_ticker_low) \
 						.take(10)
 
 sc.parallelize(result).coalesce(1) \
-					  .saveAsTextFile("output/results.txt")
+					  .saveAsTextFile("file:///Users/jgmathew/Documents/RomaTre/Magistrale/SecondoAnno/SecondoSemestre/BigData/FirstProject/job1/spark/output/")

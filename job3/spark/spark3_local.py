@@ -22,7 +22,7 @@ hsp = sqlContext \
 	  .read \
 	  .format('com.databricks.spark.csv') \
 	  .options(header='true', inferschema='true', quote='"', delimiter=',') \
-	  .load("../../dataset/historical_stock_prices.csv") \
+	  .load("file:///Users/jgmathew/Documents/RomaTre/Magistrale/SecondoAnno/SecondoSemestre/BigData/FirstProject/dataset/historical_stock_prices.csv") \
 	  .rdd
 
 hsp = hsp \
@@ -31,7 +31,7 @@ hsp = hsp \
 hs = sqlContext \
 	 .read.format('com.databricks.spark.csv') \
 	 .options(header='true', inferschema='true', quote='"', delimiter=',') \
-	 .load("../../dataset/historical_stocks.csv") \
+	 .load("file:///Users/jgmathew/Documents/RomaTre/Magistrale/SecondoAnno/SecondoSemestre/BigData/FirstProject/dataset/historical_stocks.csv") \
 	 .rdd
 
 hs = hs.filter(lambda line: line[3] != "N/A")
@@ -120,4 +120,4 @@ result = three_row_clean_order \
 		 .map(lambda line: (line[1][0][1],line[1][1][1],line[0])) \
 		 .sortBy(lambda a: a[0]).collect()
 
-sc.parallelize(result).coalesce(1).saveAsTextFile("output/result.txt")
+sc.parallelize(result).coalesce(1).saveAsTextFile("file:///Users/jgmathew/Documents/RomaTre/Magistrale/SecondoAnno/SecondoSemestre/BigData/FirstProject/job1/spark/output/")
