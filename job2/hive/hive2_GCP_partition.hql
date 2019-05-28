@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS first_pricipal_table AS 
 SELECT hs.sector, hsp.ticker, hsp.data, hsp.close, hsp.volume 
 FROM historical_stock AS hs JOIN historical_stock_prices AS hsp ON hsp.ticker=hs.ticker 
-WHERE YEAR(hsp.data)>=2004 AND YEAR(hsp.data)<=2018 AND hs.sector!='N/A';
+WHERE year>=2004 AND year<=2018 AND hs.sector!='N/A';
 
 CREATE VIEW IF NOT EXISTS sector_data_volume AS 
 SELECT sector, YEAR(data) AS anno, SUM(volume) AS somma_volume 
@@ -41,9 +41,9 @@ SELECT sector, YEAR(data) AS anno, AVG(somma) AS media
 FROM sector_data_sum_close 
 GROUP BY sector, YEAR(data);
 
-INSERT OVERWRITE LOCAL DIRECTORY 'output/'
+INSERT OVERWRITE DIRECTORY 'gs://bug-data/output/hive/job2/'
 ROW FORMAT DELIMITED
-FIELDS TERMINATED BY '\t' 
+FIELDS TERMINATED BY '\t'
 SELECT a.sector, a.anno, c.somma_volume, b.perc_var_anno, a.media 
 FROM sector_data_avg_close AS a, sector_data_close AS b, sector_data_volume AS c 
 WHERE a.sector=b.sector AND b.sector=c.sector AND a.anno=b.anno AND c.anno=b.anno

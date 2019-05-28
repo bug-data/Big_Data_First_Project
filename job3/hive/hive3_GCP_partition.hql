@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS table_ex3 AS 
 SELECT hs.name, hs.sector, hsp.data, hsp.close, hs.ticker
 FROM historical_stock AS hs JOIN historical_stock_prices AS hsp on hsp.ticker=hs.ticker
-WHERE YEAR(data)>=2016 AND YEAR(data)<=2018 AND hs.sector!='N/A';
+WHERE year>=2016 AND year<=2018 AND hs.sector!='N/A';
 
 CREATE VIEW IF NOT EXISTS name_data_min_max AS 
 SELECT name, ticker, sector, YEAR(data) AS anno, min(TO_DATE(data)) AS min_data, max(TO_DATE(data)) AS max_data 
