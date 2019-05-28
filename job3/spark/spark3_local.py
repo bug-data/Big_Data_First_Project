@@ -1,5 +1,15 @@
-from pyspark import SparkConf, SparkContext
+from pyspark import SparkConf, SparkContext, StorageLevel
 from pyspark.sql import SQLContext
+import csv
+
+
+def get_year(dateAsString):
+	return int(dateAsString[:4])
+
+
+def parse_line(line):
+	csv_reader = csv.reader([line], delimiter=',')
+	return next(csv_reader)
 
 
 def min_close(x, y):
@@ -17,46 +27,40 @@ def max_close(x, y):
 
 conf = SparkConf().setMaster("local[*]").setAppName("Job3")
 sc = SparkContext(conf=conf)
-sqlContext = SQLContext(sc)
-hsp = sqlContext \
-	  .read \
-	  .format('com.databricks.spark.csv') \
-	  .options(header='true', inferschema='true', quote='"', delimiter=',') \
-	  .load("../../dataset/historical_stock_prices.csv") \
-	  .rdd
 
-hsp = hsp \
-	  .filter(lambda line: line[7].year >= 2016 and line[7].year <= 2018)
+hsp = sc.textFile("file:///Users/jgmathew/Documents/RomaTre/Magistrale/SecondoAnno/SecondoSemestre/BigData/FirstProject/dataset/historical_stock_prices.csv") \
+		.map(lambda line: parse_line(line)) \
+		.filter(lambda line: line[0] != "ticker") \
+	  	.filter(lambda line: get_year(line[7]) >= 2016 and get_year(line[7]) <= 2018)
 
-hs = sqlContext \
-	 .read.format('com.databricks.spark.csv') \
-	 .options(header='true', inferschema='true', quote='"', delimiter=',') \
-	 .load("../../dataset/historical_stocks.csv") \
-	 .rdd
-
-hs = hs.filter(lambda line: line[3] != "N/A")
+hs = sc.textFile("file:///Users/jgmathew/Documents/RomaTre/Magistrale/SecondoAnno/SecondoSemestre/BigData/FirstProject/dataset/historical_stocks.csv") \
+ 	   .map(lambda line: parse_line(line)) \
+ 	   .filter(lambda line: line[0] != "ticker") \
+	   .filter(lambda line: line[3] != "N/A")
 
 join_hsp_hs = hsp \
 			  .map(lambda line: (line[0], (line[2], line[7]))) \
 			  .join(hs.map(lambda line: (line[0], (line[2], line[3]))))
 
 # restituisce un rdd con ticker, close, data, name, settore
-join_hsp_hs = join_hsp_hs.map(lambda line: (line[0], line[1][0][0],
+join_hsp_hs = join_hsp_hs.map(lambda line: (line[0], float(line[1][0][0]),
 											line[1][0][1], line[1][1][0], line[1][1][1]))
-	
+
+# persist the RDD
+join_hsp_hs.persist(StorageLevel.MEMORY_AND_DISK)
 
 # input (ticker, settore, anno, name), (close, data) - trovo minima data --> 
 # mappo su (settore, anno), close --> restitusco (settore, anno),
 # somma dei close
 min_data_close = join_hsp_hs \
-				 .map(lambda line: ((line[0], line[4], line[2].year, line[3]), (line[1],
+				 .map(lambda line: ((line[0], line[4], get_year(line[2]), line[3]), (line[1],
 				 																line[2]))) \
 				 .reduceByKey(lambda x, y: min_close(x, y)) \
 				 .map(lambda line: ((line[0][1], line[0][2], line[0][3]), line[1][0])) \
 				 .reduceByKey(lambda x, y: x+y)
 		
 max_data_close = join_hsp_hs \
-				 .map(lambda line: ((line[0], line[4], line[2].year, line[3]), (line[1],
+				 .map(lambda line: ((line[0], line[4], get_year(line[2]), line[3]), (line[1],
 				 																line[2]))) \
 				 .reduceByKey(lambda x, y: max_close(x, y)) \
 				 .map(lambda line: ((line[0][1], line[0][2], line[0][3]), line[1][0])) \
@@ -118,6 +122,6 @@ result = three_row_clean_order \
 		 .reduceByKey(lambda x,y: x+y).filter(lambda line: len(line[1])>=2) \
 		 .filter(lambda line: line[1][0][0]!=line[1][1][0]) \
 		 .map(lambda line: (line[1][0][1],line[1][1][1],line[0])) \
-		 .sortBy(lambda a: a[0]).collect()
+		 .sortBy(lambda a: a[0])
 
-sc.parallelize(result).coalesce(1).saveAsTextFile("output/result.txt")
+result.coalesce(1).saveAsTextFile("file:///Users/jgmathew/Documents/RomaTre/Magistrale/SecondoAnno/SecondoSemestre/BigData/FirstProject/job3/spark/output/")

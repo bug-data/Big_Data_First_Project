@@ -1,4 +1,4 @@
-from pyspark import SparkConf, SparkContext
+from pyspark import SparkConf, SparkContext, StorageLevel
 
 conf = SparkConf().setMaster("yarn").setAppName("Job1")
 sc = SparkContext(conf=conf)
@@ -24,6 +24,9 @@ input = input.filter(lambda line: line[0] != "ticker")
 
 input = input.filter(lambda line: line[7][0:4] >= "1998" and
 								  line[7][0:4] <= "2018")
+
+# persist RDD in memory
+input.persist(StorageLevel.MEMORY_AND_DISK)
 
 min_ticker_low = input.map(lambda line: (line[0], float(line[4]))) \
 					  .reduceByKey(lambda x, y: min(x, y))
@@ -58,4 +61,4 @@ result = max_ticker_high.join(min_ticker_low) \
 						.take(10)
 
 sc.parallelize(result).coalesce(1) \
-					  .saveAsTextFile("gs://bug-data/output/spark/results.txt")
+					  .saveAsTextFile("gs://bug-data/output/spark/job1/output")
