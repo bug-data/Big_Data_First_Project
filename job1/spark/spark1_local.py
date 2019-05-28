@@ -1,4 +1,4 @@
-from pyspark import SparkConf, SparkContext
+from pyspark import SparkConf, SparkContext, StorageLevel
 
 conf = SparkConf().setMaster("local[*]").setAppName("Job1")
 sc = SparkContext(conf=conf)
@@ -16,6 +16,7 @@ def max_close(x, y):
 		return y
 	else:
 		return x
+7
 input = sc.textFile("file:///Users/jgmathew/Documents/RomaTre/Magistrale/SecondoAnno/SecondoSemestre/BigData/FirstProject/dataset/historical_stock_prices.csv") \
 		.map(lambda line: line.split(","))
 
@@ -23,6 +24,9 @@ input = input.filter(lambda line: line[0] != "ticker")
 
 input = input.filter(lambda line: line[7][0:4] >= "1998" and
 								  line[7][0:4] <= "2018")
+
+# persist RDD in memory
+input.persist(StorageLevel.MEMORY_AND_DISK)
 
 min_ticker_low = input.map(lambda line: (line[0], float(line[4]))) \
 					  .reduceByKey(lambda x, y: min(x, y))
