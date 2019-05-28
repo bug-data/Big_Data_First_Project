@@ -83,6 +83,6 @@ result = inc_perc \
 		 .map(lambda line: [line[0][0], line[0][1], line[1][0][0], line[1][0][1],
 		                    line[1][1]])
 
-sc.parallelize(result.collect()).coalesce(1).saveAsTextFile("file:///Users/jgmathew/Documents/RomaTre/Magistrale/SecondoAnno/SecondoSemestre/BigData/FirstProject/job1/spark/output/")
+sc.parallelize(result.collect()).coalesce(1).saveAsTextFile("file:///Users/jgmathew/Documents/RomaTre/Magistrale/SecondoAnno/SecondoSemestre/BigData/FirstProject/job2/spark/output/")
 
 

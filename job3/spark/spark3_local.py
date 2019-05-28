@@ -120,4 +120,4 @@ result = three_row_clean_order \
 		 .map(lambda line: (line[1][0][1],line[1][1][1],line[0])) \
 		 .sortBy(lambda a: a[0]).collect()
 
-sc.parallelize(result).coalesce(1).saveAsTextFile("file:///Users/jgmathew/Documents/RomaTre/Magistrale/SecondoAnno/SecondoSemestre/BigData/FirstProject/job1/spark/output/")
+sc.parallelize(result).coalesce(1).saveAsTextFile("file:///Users/jgmathew/Documents/RomaTre/Magistrale/SecondoAnno/SecondoSemestre/BigData/FirstProject/job3/spark/output/")
