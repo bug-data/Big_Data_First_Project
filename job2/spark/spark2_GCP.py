@@ -83,6 +83,6 @@ result = inc_perc \
 		 .map(lambda line: [line[0][0], line[0][1], line[1][0][0], line[1][0][1],
 		                    line[1][1]])
 
-sc.parallelize(result.collect()).coalesce(1).saveAsTextFile("gs://bug-data/output/spark/results.txt")
+sc.parallelize(result.collect()).coalesce(1).saveAsTextFile("gs://bug-data/output/spark/job2/")
 
 

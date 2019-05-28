@@ -58,4 +58,4 @@ result = max_ticker_high.join(min_ticker_low) \
 						.take(10)
 
 sc.parallelize(result).coalesce(1) \
-					  .saveAsTextFile("gs://bug-data/output/spark/results.txt")
+					  .saveAsTextFile("gs://bug-data/output/spark/job1/")
