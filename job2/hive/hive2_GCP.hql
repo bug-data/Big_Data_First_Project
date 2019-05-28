@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS first_pricipal_table AS 
 SELECT hs.sector, hsp.ticker, hsp.data, hsp.close, hsp.volume 
-FROM historical_stock_prices AS hsp JOIN historical_stock AS hs ON hsp.ticker=hs.ticker 
+FROM historical_stock AS hs JOIN historical_stock_prices AS hsp ON hsp.ticker=hs.ticker 
 WHERE YEAR(hsp.data)>=2004 AND YEAR(hsp.data)<=2018 AND hs.sector!='N/A';
 
 CREATE VIEW IF NOT EXISTS sector_data_volume AS 
