@@ -114,8 +114,6 @@ three_row_clean_order = three_row_clean \
 						.map(lambda line: order_three(line))
 
 
-def no_sector(x, y):
-	return x
 
 result = three_row_clean_order \
 		 .map(lambda line: (tuple(line[1]),([(line[0])]))) \
