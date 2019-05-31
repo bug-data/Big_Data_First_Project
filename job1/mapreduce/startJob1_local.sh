@@ -6,5 +6,5 @@ mapred streaming \
 		-files mapper.py,reducer.py \
 		-mapper mapper.py \
 		-reducer reducer.py \
-		-input input/historical_stock_prices.csv \
+		-input input/historical_stock_prices_double.csv \
 		-output output/job1_hadoop
