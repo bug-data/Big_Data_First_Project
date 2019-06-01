@@ -132,3 +132,8 @@ dataset/
 job1/hive/output/
 job2/hive/output/
 job3/hive/output/
+
+# spark output
+job1/spark/output/
+job2/spark/output/
+job3/spark/output/
