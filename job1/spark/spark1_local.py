@@ -16,7 +16,7 @@ def max_close(x, y):
 		return y
 	else:
 		return x
-7
+
 input = sc.textFile("file:///Users/jgmathew/Documents/RomaTre/Magistrale/SecondoAnno/SecondoSemestre/BigData/FirstProject/dataset/historical_stock_prices.csv") \
 		.map(lambda line: line.split(","))
 
